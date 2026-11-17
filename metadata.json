@@ -1,0 +1,6 @@
+{
+  "name": "ПУЭ Инженер: Расчет кабеля и выбор АВ",
+  "description": "Инженерный калькулятор подбора автоматического выключателя и комплексного расчета кабельной линии по ПУЭ 7-го издания (табл. 1.3.4–1.3.7, 1.3.3, 1.3.26) с полным исходным кодом на Kotlin + Jetpack Compose.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

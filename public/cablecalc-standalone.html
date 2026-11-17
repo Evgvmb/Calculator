@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="theme-color" content="#0b1322" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CableCalc" />
+  <title>CableCalc Pro — Инженерный калькулятор ПУЭ (7-е издание)</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <style>
+    :root[data-theme="dark"] {
+      --bg-app: #0b1322;
+      --bg-sidebar: #0d1729;
+      --bg-card: #121e33;
+      --bg-card-inner: #0e182a;
+      --bg-input: #14223a;
+      --border-color: #213454;
+      --border-subtle: #192944;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-blue: #1d7bf6;
+      --accent-blue-hover: #2f88ff;
+      --accent-green: #18b76c;
+      --accent-green-bg: rgba(24, 183, 108, 0.14);
+      --accent-green-border: #1b8c58;
+      --hero-grad-start: #103c32;
+      --hero-grad-end: #0d2729;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --shadow-card: 0 10px 28px -8px rgba(0, 0, 0, 0.45);
+    }
+
+    :root[data-theme="light"] {
+      --bg-app: #f1f5f9;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-inner: #f8fafc;
+      --bg-input: #f1f5f9;
+      --border-color: #cbd5e1;
+      --border-subtle: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --accent-blue: #1d7bf6;
+      --accent-blue-hover: #1565d8;
+      --accent-green: #159957;
+      --accent-green-bg: rgba(21, 153, 87, 0.12);
+      --accent-green-border: #18a55d;
+      --hero-grad-start: #e6f7ef;
+      --hero-grad-end: #d5f2e4;
+      --accent-amber: #d97706;
+      --accent-red: #dc2626;
+      --shadow-card: 0 6px 20px -6px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.45;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    /* TOP HEADER */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      gap: 12px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(29, 123, 246, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    .brand-titles h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .brand-titles p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 30px;
+      background: var(--border-color);
+      margin: 0 6px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .offline-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: var(--accent-green-bg);
+      border: 1px solid var(--accent-green-border);
+      color: var(--accent-green);
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .icon-btn:hover {
+      color: var(--text-main);
+      border-color: var(--accent-blue);
+    }
+
+    .install-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent-blue);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    /* APP LAYOUT */
+    .app-shell {
+      display: flex;
+      flex: 1;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* LEFT SIDEBAR */
+    .sidebar {
+      width: 220px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      padding: 18px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+      background: rgba(29, 123, 246, 0.08);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(90deg, #1d7bf6 0%, rgba(29, 123, 246, 0.25) 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(29, 123, 246, 0.28);
+    }
+
+    .sidebar-art {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      padding: 10px 4px;
+    }
+
+    /* MAIN CONTENT */
+    .workspace {
+      flex: 1;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    /* FORM CONTROLS */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 0.85fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .seg-btn {
+      min-height: 44px;
+      padding: 6px 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      line-height: 1.2;
+    }
+
+    .seg-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .select-wrap, .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    select:focus, input[type="number"]:focus {
+      border-color: var(--accent-blue);
+    }
+
+    /* COLLAPSIBLE BLOCK */
+    .details-box {
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 6px;
+    }
+
+    .details-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      padding: 2px 0;
+    }
+
+    .details-content {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* RIGHT HERO CARD */
+    .hero-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .hero-breaker-box {
+      background: linear-gradient(135deg, var(--hero-grad-start), var(--hero-grad-end));
+      border: 1.5px solid var(--accent-green-border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hero-check-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(24, 183, 108, 0.35);
+    }
+
+    .hero-breaker-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .hero-breaker-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .hero-breaker-value {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hero-curve-caption {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .curve-pills {
+      display: inline-flex;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .curve-pill {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .curve-pill.active {
+      background: var(--accent-green);
+      color: #fff;
+      border-color: var(--accent-green);
+    }
+
+    /* PROGRESS BAR */
+    .load-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .load-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .load-track {
+      flex: 1;
+      height: 14px;
+      background: var(--bg-card-inner);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .load-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #18b76c, #34d399);
+      transition: width 0.2s ease;
+    }
+
+    .load-pct {
+      font-size: 1rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      min-width: 46px;
+      text-align: right;
+    }
+
+    .load-caption {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* DUAL METRIC BOX */
+    .dual-stat-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .dual-stat-col:first-child {
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .dual-stat-title {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .dual-stat-num {
+      font-size: 1.45rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .power-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card-inner);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 16px;
+    }
+
+    .status-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--accent-green-bg);
+      border: 1px solid var(--accent-green-border);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-banner.warn {
+      background: rgba(245, 158, 11, 0.14);
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    /* BOTTOM CARDS */
+    .kv-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.84rem;
+    }
+
+    .kv-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .kv-label {
+      color: var(--text-muted);
+    }
+
+    .kv-val {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .drop-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--accent-green-bg);
+      border: 1px solid var(--accent-green-border);
+      color: var(--accent-green);
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-right: 4px;
+    }
+
+    .drop-badge.bad {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .notes-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .notes-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .note-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    /* FOOTER BAR */
+    .footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .action-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-primary, .btn-outline {
+      min-height: 42px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-blue-hover);
+    }
+
+    .btn-outline {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    table.pue-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    table.pue-table th, table.pue-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: right;
+    }
+
+    table.pue-table th:first-child, table.pue-table td:first-child {
+      text-align: left;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1024px) {
+      .top-grid, .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .brand-divider, .brand-subtitle {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .workspace {
+        padding: 12px;
+        padding-bottom: 80px;
+      }
+      .mobile-nav {
+        display: grid !important;
+      }
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--bg-sidebar);
+      border-top: 1px solid var(--border-color);
+      z-index: 50;
+      padding: 6px 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand-group">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+      <div class="brand-titles">
+        <h1>CableCalc Pro</h1>
+        <p>Инженерный калькулятор</p>
+      </div>
+      <div class="brand-divider"></div>
+      <div class="brand-subtitle">Расчет кабельных линий<br/>по ПУЭ (7-е издание)</div>
+    </div>
+
+    <div class="topbar-actions">
+      <button id="pwaInstallBtn" class="install-btn" type="button">Установить PWA</button>
+      <div class="offline-pill" id="offlineBadge">
+        <span>✓</span>
+        <span id="offlineText">Работает офлайн</span>
+      </div>
+      <button class="icon-btn" id="themeToggleBtn" type="button" title="Переключить тему">
+        ☀
+      </button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <nav class="nav-list">
+        <button class="nav-btn active" data-tab="calc" type="button">Расчет</button>
+        <button class="nav-btn" data-tab="ref" type="button">Справочники</button>
+        <button class="nav-btn" data-tab="about" type="button">О программе</button>
+      </nav>
+      <div class="sidebar-art">
+        ПУЭ • Надежность • Безопасность
+      </div>
+    </aside>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="workspace">
+      <!-- TAB 1: CALCULATOR -->
+      <div id="tab-calc" class="view-section active">
+        <div class="top-grid">
+          <!-- LEFT CARD: PARAMETERS -->
+          <section class="card">
+            <div class="card-header">
+              <span style="color: var(--accent-blue)">⚙</span>
+              <span>Параметры расчета</span>
+            </div>
+
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label">Материал жилы</label>
+                <div class="segmented">
+                  <button type="button" class="seg-btn active" data-mat="CU">Медь (Cu)</button>
+                  <button type="button" class="seg-btn" data-mat="AL">Алюминий (Al)</button>
+                </div>
+              </div>
+              <div>
+                <label class="field-label">Тип изоляции</label>
+                <div class="segmented">
+                  <button type="button" class="seg-btn active" data-ins="PVC">ПВХ (до +70°C)</button>
+                  <button type="button" class="seg-btn" data-ins="XLPE">СПЭ / Резина (до +90°C)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid-3">
+              <div>
+                <label class="field-label" for="sectionSelect">Сечение, мм²</label>
+                <select id="sectionSelect"></select>
+              </div>
+              <div>
+                <label class="field-label" for="networkSelect">Напряжение сети</label>
+                <select id="networkSelect">
+                  <option value="3_380">3 фазы (380/400 В)</option>
+                  <option value="1_220">1 фаза (220/230 В)</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label" for="cosSelect">cos φ</label>
+                <select id="cosSelect">
+                  <option value="0.95" selected>0.95</option>
+                  <option value="1.00">1.00 (ТЭН)</option>
+                  <option value="0.90">0.90</option>
+                  <option value="0.85">0.85 (Двиг.)</option>
+                  <option value="0.80">0.80</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label" for="methodSelect">Способ прокладки</label>
+                <select id="methodSelect">
+                  <option value="CONDUIT" selected>Скрыто (в трубе / штробе)</option>
+                  <option value="OPEN">Открыто (по воздуху / в лотке)</option>
+                  <option value="GROUND">В земле (траншее)</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label" for="coresSelect">Количество жил</label>
+                <select id="coresSelect">
+                  <option value="3" selected>Трехжильный</option>
+                  <option value="2">Двухжильный</option>
+                  <option value="1">Одножильный</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div>
+                <label class="field-label" for="lengthInput">Длина линии, м</label>
+                <input id="lengthInput" type="number" min="1" max="5000" value="25" />
+              </div>
+              <div>
+                <label class="field-label" for="dropLimitSelect">ΔU допустимое</label>
+                <select id="dropLimitSelect">
+                  <option value="5" selected>5% (силовая нагрузка)</option>
+                  <option value="3">3% (освещение)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="details-box">
+              <button type="button" class="details-toggle" id="condToggle">
+                <span>⌄ Условия прокладки и коэффициенты</span>
+                <span id="condSummary" style="font-size:0.75rem; color:var(--text-muted)">Kt=1.00 • Kb=1.00</span>
+              </button>
+              <div class="details-content" id="condContent">
+                <div class="form-grid-2" style="margin-bottom:0">
+                  <div>
+                    <label class="field-label" for="tempSelect">Температура среды</label>
+                    <select id="tempSelect">
+                      <option value="15">+15 °C (земля норма)</option>
+                      <option value="20">+20 °C</option>
+                      <option value="25" selected>+25 °C (воздух норма)</option>
+                      <option value="30">+30 °C</option>
+                      <option value="35">+35 °C</option>
+                      <option value="40">+40 °C</option>
+                      <option value="45">+45 °C</option>
+                      <option value="50">+50 °C</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="field-label" for="bundleSelect">Кабелей в пучке</label>
+                    <select id="bundleSelect">
+                      <option value="1.00" selected>1 кабель (K=1.00)</option>
+                      <option value="0.85">2 кабеля (K=0.85)</option>
+                      <option value="0.79">3 кабеля (K=0.79)</option>
+                      <option value="0.75">4 кабеля (K=0.75)</option>
+                      <option value="0.70">5–6 кабелей (K=0.70)</option>
+                      <option value="0.65">7–9 кабелей (K=0.65)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- RIGHT CARD: RECOMMENDED BREAKER -->
+          <section class="card hero-panel">
+            <div class="hero-breaker-box">
+              <div class="hero-check-circle">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div style="flex:1">
+                <div class="hero-breaker-label">Рекомендуемый автомат</div>
+                <div class="hero-breaker-value-row">
+                  <span class="hero-breaker-value" id="heroBreakerText">C16</span>
+                  <span class="hero-curve-caption" id="heroCurveCaption">(характеристика C)</span>
+                  <div class="curve-pills">
+                    <button type="button" class="curve-pill" data-curve="B">B</button>
+                    <button type="button" class="curve-pill active" data-curve="C">C</button>
+                    <button type="button" class="curve-pill" data-curve="D">D</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="load-bar-wrap">
+              <div class="load-bar-row">
+                <div class="load-track">
+                  <div class="load-fill" id="loadFill" style="width: 76%"></div>
+                </div>
+                <div class="load-pct" id="loadPctRight">76%</div>
+              </div>
+              <div class="load-caption" id="loadCaption">Загрузка кабеля: 76%</div>
+            </div>
+
+            <div class="dual-stat-box">
+              <div class="dual-stat-col">
+                <div class="dual-stat-title">Ток кабеля (табл.)</div>
+                <div class="dual-stat-num" id="statBaseCurrent">21 А</div>
+              </div>
+              <div class="dual-stat-col">
+                <div class="dual-stat-title">Допустимый ток (Iдд)</div>
+                <div class="dual-stat-num" id="statEffCurrent">21 А</div>
+              </div>
+            </div>
+
+            <div class="power-box">
+              <span style="color: var(--accent-amber); font-size: 1.35rem">⚡</span>
+              <div>
+                <div style="font-size: 0.76rem; color: var(--text-muted)">Макс. мощность</div>
+                <div style="font-size: 1.25rem; font-weight: 800" id="heroPowerText">≈ 10.0 кВт</div>
+              </div>
+            </div>
+
+            <div class="status-banner" id="pueStatusBanner">
+              <span>✓</span>
+              <span id="pueStatusText">Расчет выполнен в соответствии с ПУЭ</span>
+            </div>
+          </section>
+        </div>
+
+        <!-- BOTTOM 3 CARDS -->
+        <div class="bottom-grid">
+          <section class="card">
+            <div class="card-header">
+              <span style="color: var(--accent-amber)">⚡</span>
+              <span>Электрические параметры</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row">
+                <span class="kv-label">Длительно допустимый ток (Iдд)</span>
+                <span class="kv-val" id="paramIdd">21.0 А</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-label">Ток теплового расцепления АВ</span>
+                <span class="kv-val" id="paramThermal">18.1–23.2 А</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-label">Макс. мощность (по АВ)</span>
+                <span class="kv-val" id="paramPowerBrk">10.0 кВт</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-label">Макс. мощность (по кабелю)</span>
+                <span class="kv-val" id="paramPowerCbl">13.1 кВт</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <span style="color: var(--accent-amber)">〰</span>
+              <span>Потери напряжения и КЗ</span>
+            </div>
+            <div class="kv-list">
+              <div class="kv-row">
+                <span class="kv-label">Падение напряжения</span>
+                <span class="kv-val">
+                  <span class="drop-badge" id="dropBadge">1.9%</span>
+                  <span id="dropStatusText" style="font-size:0.78rem; color:var(--accent-green)">(в норме)</span>
+                </span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-label">Мин. ток КЗ</span>
+                <span class="kv-val" id="paramMinSc">176 А</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-label">Макс. сопротивление петли «фаза-ноль»</span>
+                <span class="kv-val" id="paramLoopZ">1.25 Ом</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <span style="color: var(--accent-amber)">⚠</span>
+              <span>Важные замечания</span>
+            </div>
+            <ul class="notes-list" id="warningsList"></ul>
+          </section>
+        </div>
+
+        <!-- FOOTER BAR -->
+        <footer class="footer-bar">
+          <div class="action-btns">
+            <button type="button" class="btn-primary" id="copyBtn">Копировать расчет</button>
+            <button type="button" class="btn-outline" id="shareBtn">Поделиться</button>
+            <button type="button" class="btn-outline" id="printBtn">Печать</button>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted)">
+            ⓘ CableCalc Pro v1.0 • ПУЭ 7-е издание
+          </div>
+        </footer>
+      </div>
+
+      <!-- TAB 2: REFERENCE TABLES -->
+      <div id="tab-ref" class="view-section">
+        <section class="card" style="overflow-x:auto">
+          <div class="card-header">Таблицы длительно допустимых токов ПУЭ (7-е изд., табл. 1.3.4–1.3.7)</div>
+          <table class="pue-table" id="refTable"></table>
+        </section>
+      </div>
+
+      <!-- TAB 3: ABOUT -->
+      <div id="tab-about" class="view-section">
+        <section class="card">
+          <div class="card-header">О программе CableCalc Pro (Offline PWA)</div>
+          <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.6">
+            Инженерный калькулятор CableCalc Pro работает полностью автономно без подключения к сети Интернет. Все таблицы допустимых токов (1.3.4–1.3.7), температурных коэффициентов (1.3.3) и групповой прокладки (1.3.26) ПУЭ 7-го издания встроены в код приложения.
+          </p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-nav">
+    <button class="nav-btn active" data-tab="calc" type="button">Расчет</button>
+    <button class="nav-btn" data-tab="ref" type="button">Таблицы</button>
+    <button class="nav-btn" data-tab="about" type="button">О PWA</button>
+  </nav>
+
+  <script>
+    const SECTIONS = [0.5, 0.75, 1.0, 1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240];
+    const BREAKERS = [1, 2, 3, 4, 6, 10, 13, 16, 20, 25, 32, 40, 50, 63, 80, 100, 125, 160, 200, 250, 320, 400, 500, 630];
+
+    const CU_TABLE = {
+      0.5:  { OPEN:[11,9.5,8.5],   CONDUIT:[9.5,8,7.5],    GROUND:[14,12,11] },
+      0.75: { OPEN:[15,13,11.5],   CONDUIT:[13,11,10],     GROUND:[19,16,14] },
+      1.0:  { OPEN:[17,16,14],     CONDUIT:[16,15,14],     GROUND:[23,20,18] },
+      1.5:  { OPEN:[23,19,17],     CONDUIT:[19,18,15],     GROUND:[31,27,23] },
+      2.5:  { OPEN:[30,27,25],     CONDUIT:[27,21,19],     GROUND:[42,38,33] },
+      4:    { OPEN:[41,38,35],     CONDUIT:[38,32,27],     GROUND:[55,49,43] },
+      6:    { OPEN:[50,46,42],     CONDUIT:[46,38,34],     GROUND:[69,60,53] },
+      10:   { OPEN:[80,70,60],     CONDUIT:[70,55,50],     GROUND:[95,85,75] },
+      16:   { OPEN:[100,85,80],    CONDUIT:[85,75,70],     GROUND:[125,110,100] },
+      25:   { OPEN:[140,115,100],  CONDUIT:[115,95,85],    GROUND:[165,145,130] },
+      35:   { OPEN:[170,135,125],  CONDUIT:[135,120,100],  GROUND:[200,175,160] },
+      50:   { OPEN:[215,175,160],  CONDUIT:[185,145,135],  GROUND:[245,215,195] },
+      70:   { OPEN:[270,215,195],  CONDUIT:[225,180,165],  GROUND:[300,265,240] },
+      95:   { OPEN:[325,260,230],  CONDUIT:[275,220,200],  GROUND:[360,315,285] },
+      120:  { OPEN:[385,300,260],  CONDUIT:[315,260,235],  GROUND:[410,360,325] },
+      150:  { OPEN:[440,340,295],  CONDUIT:[360,305,275],  GROUND:[465,405,365] },
+      185:  { OPEN:[510,395,340],  CONDUIT:[415,350,315],  GROUND:[520,455,410] },
+      240:  { OPEN:[605,465,405],  CONDUIT:[490,415,375],  GROUND:[600,525,470] }
+    };
+
+    const AL_TABLE = {
+      2.5:  { OPEN:[24,20,19],     CONDUIT:[20,16,15],     GROUND:[32,29,25] },
+      4:    { OPEN:[32,28,27],     CONDUIT:[28,24,21],     GROUND:[42,38,33] },
+      6:    { OPEN:[39,36,32],     CONDUIT:[36,29,26],     GROUND:[53,46,41] },
+      10:   { OPEN:[60,50,47],     CONDUIT:[50,42,38],     GROUND:[73,65,58] },
+      16:   { OPEN:[75,60,60],     CONDUIT:[60,55,55],     GROUND:[96,85,77] },
+      25:   { OPEN:[105,85,75],    CONDUIT:[85,70,65],     GROUND:[127,112,100] },
+      35:   { OPEN:[130,100,95],   CONDUIT:[100,90,75],    GROUND:[154,135,123] },
+      50:   { OPEN:[165,135,125],  CONDUIT:[140,110,105],  GROUND:[189,165,150] },
+      70:   { OPEN:[210,165,150],  CONDUIT:[175,140,130],  GROUND:[231,204,185] },
+      95:   { OPEN:[255,200,175],  CONDUIT:[215,170,155],  GROUND:[277,243,220] },
+      120:  { OPEN:[295,230,200],  CONDUIT:[245,200,180],  GROUND:[316,277,250] },
+      150:  { OPEN:[340,260,225],  CONDUIT:[275,235,210],  GROUND:[358,312,280] },
+      185:  { OPEN:[390,305,260],  CONDUIT:[320,270,245],  GROUND:[400,350,315] },
+      240:  { OPEN:[465,355,310],  CONDUIT:[375,320,290],  GROUND:[462,404,362] }
+    };
+
+    const state = {
+      material: 'CU',
+      insulation: 'PVC',
+      section: 2.5,
+      phases: 3,
+      voltage: 380,
+      cosPhi: 0.95,
+      method: 'CONDUIT',
+      cores: 2,
+      length: 25,
+      dropLimit: 5,
+      tempC: 25,
+      bundleFactor: 1.0,
+      curve: 'C',
+      specText: ''
+    };
+
+    const sectionSelect = document.getElementById('sectionSelect');
+
+    function populateSections() {
+      sectionSelect.innerHTML = '';
+      SECTIONS.forEach((sec) => {
+        const opt = document.createElement('option');
+        opt.value = sec;
+        const blocked = state.material === 'AL' && sec < 2.5;
+        opt.disabled = blocked;
+        opt.textContent = blocked ? sec + ' мм² (не для Al)' : sec;
+        if (sec === state.section) opt.selected = true;
+        sectionSelect.appendChild(opt);
+      });
+    }
+
+    function getBaseCurrent(mat, ins, sec, method, cores) {
+      const tbl = mat === 'CU' ? CU_TABLE : AL_TABLE;
+      const row = tbl[sec];
+      if (!row) return 0;
+      const idx = cores === 1 ? 0 : cores === 2 ? 1 : 2;
+      let val = row[method][idx];
+      if (ins === 'XLPE') {
+        val = Math.round(val * (method === 'GROUND' ? 1.13 : 1.18) * 10) / 10;
+      }
+      return val;
+    }
+
+    function getTempFactor(ins, method, tempC) {
+      const tMax = ins === 'PVC' ? 70 : 90;
+      const tNorm = method === 'GROUND' ? 15 : 25;
+      if (tempC >= tMax - 2) return 0.25;
+      return Math.round(Math.sqrt((tMax - tempC) / (tMax - tNorm)) * 100) / 100;
+    }
+
+    function recalculate() {
+      const baseI = getBaseCurrent(state.material, state.insulation, state.section, state.method, state.cores);
+      const kt = getTempFactor(state.insulation, state.method, state.tempC);
+      const kb = state.bundleFactor;
+      const effI = Math.round(baseI * kt * kb * 10) / 10;
+
+      const validBreakers = BREAKERS.filter((b) => b <= effI);
+      const inBreaker = validBreakers.length ? validBreakers[validBreakers.length - 1] : 0;
+
+      const loadPct = effI > 0 ? Math.min(100, Math.round((inBreaker / effI) * 100)) : 0;
+      const phaseMult = state.phases === 3 ? Math.sqrt(3) : 1;
+      const pBrk = Math.round(((phaseMult * state.voltage * inBreaker * state.cosPhi) / 1000) * 10) / 10;
+      const pCbl = Math.round(((phaseMult * state.voltage * effI * state.cosPhi) / 1000) * 10) / 10;
+
+      const rho = state.material === 'CU' ? (state.insulation === 'PVC' ? 0.0225 : 0.024) : (state.insulation === 'PVC' ? 0.036 : 0.0385);
+      const dropMult = state.phases === 1 ? 2 : Math.sqrt(3);
+      const dropV = state.section > 0 ? (dropMult * inBreaker * state.length * rho) / state.section : 0;
+      const dropPct = Math.round((dropV / state.voltage) * 1000) / 10;
+      const dropOk = dropPct <= state.dropLimit;
+
+      let recSection = null;
+      if (!dropOk && inBreaker > 0) {
+        const maxV = (state.voltage * state.dropLimit) / 100;
+        const needS = (dropMult * inBreaker * state.length * rho) / maxV;
+        recSection = SECTIONS.find((s) => (state.material === 'CU' || s >= 2.5) && s >= needS && s > state.section) || 240;
+      }
+
+      const curveMult = state.curve === 'B' ? 5.5 : state.curve === 'C' ? 11 : 22;
+      const minSc = Math.round(inBreaker * curveMult);
+      const uPhase = state.phases === 3 ? 220 : state.voltage;
+      const loopZ = minSc > 0 ? Math.round((uPhase / minSc) * 100) / 100 : 0;
+
+      document.getElementById('condSummary').textContent = `Kt=${kt.toFixed(2)} • Kb=${kb.toFixed(2)}`;
+      document.getElementById('heroBreakerText').textContent = inBreaker > 0 ? `${state.curve}${inBreaker}` : '—';
+      document.getElementById('heroCurveCaption').textContent = `(характеристика ${state.curve})`;
+      document.getElementById('loadFill').style.width = `${loadPct}%`;
+      document.getElementById('loadPctRight').textContent = `${loadPct}%`;
+      document.getElementById('loadCaption').textContent = `Загрузка кабеля: ${loadPct}%`;
+      document.getElementById('statBaseCurrent').textContent = `${baseI} А`;
+      document.getElementById('statEffCurrent').textContent = `${effI} А`;
+      document.getElementById('heroPowerText').textContent = `≈ ${pCbl} кВт`;
+
+      document.getElementById('paramIdd').textContent = `${effI} А`;
+      document.getElementById('paramThermal').textContent = `${(inBreaker * 1.13).toFixed(1)}–${(inBreaker * 1.45).toFixed(1)} А`;
+      document.getElementById('paramPowerBrk').textContent = `${pBrk} кВт`;
+      document.getElementById('paramPowerCbl').textContent = `${pCbl} кВт`;
+
+      const dropBadge = document.getElementById('dropBadge');
+      const dropStatusText = document.getElementById('dropStatusText');
+      dropBadge.textContent = `${dropPct}%`;
+      if (dropOk) {
+        dropBadge.className = 'drop-badge';
+        dropStatusText.textContent = '(в норме)';
+        dropStatusText.style.color = 'var(--accent-green)';
+      } else {
+        dropBadge.className = 'drop-badge bad';
+        dropStatusText.textContent = `(рек. ${recSection} мм²)`;
+        dropStatusText.style.color = 'var(--accent-red)';
+      }
+
+      document.getElementById('paramMinSc').textContent = `${minSc} А`;
+      document.getElementById('paramLoopZ').textContent = `${loopZ} Ом`;
+
+      const warnings = [];
+      if (state.material === 'AL' && state.section < 16) {
+        warnings.push('Алюминий < 16 мм² в жилых и общественных зданиях запрещен (ПУЭ п. 7.1.34).');
+      } else {
+        warnings.push('Алюминий < 16 мм² в жилых зданиях не рекомендуется (ПУЭ 7.1.34).');
+      }
+      if (!dropOk && recSection) {
+        warnings.push(`Превышение потерь ΔU (${dropPct}% > ${state.dropLimit}%). Рекомендуется сечение ${recSection} мм².`);
+      }
+      if (state.section < 1.5) {
+        warnings.push('Сечения 0.5–1.0 мм² не допускаются для стационарной электропроводки (ПУЭ 7.1.34).');
+      }
+      warnings.push('При групповой прокладке учитывайте коэффициенты (табл. 1.3.26).');
+
+      const warningsList = document.getElementById('warningsList');
+      warningsList.innerHTML = warnings.map((w) => `<li><span class="note-dot"></span><span>${w}</span></li>`).join('');
+
+      state.specText = `CableCalc Pro (ПУЭ-7): ${state.material === 'CU' ? 'Медь' : 'Алюминий'} (${state.insulation}) ${state.cores}х${state.section} мм², L=${state.length} м | Iдд=${effI} А | Автомат: ${state.curve}${inBreaker} (Pмакс=${pBrk} кВт) | ΔU=${dropPct}% | Iкз.мин=${minSc} А (Zпетли≤${loopZ} Ом)`;
+    }
+
+    // Event Wiring
+    document.querySelectorAll('[data-mat]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-mat]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.material = btn.dataset.mat;
+        if (state.material === 'AL' && state.section < 2.5) state.section = 2.5;
+        populateSections();
+        recalculate();
+      });
+    });
+
+    document.querySelectorAll('[data-ins]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-ins]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.insulation = btn.dataset.ins;
+        recalculate();
+      });
+    });
+
+    document.querySelectorAll('[data-curve]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-curve]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.curve = btn.dataset.curve;
+        recalculate();
+      });
+    });
+
+    sectionSelect.addEventListener('change', (e) => { state.section = parseFloat(e.target.value); recalculate(); });
+    document.getElementById('networkSelect').addEventListener('change', (e) => {
+      if (e.target.value === '3_380') { state.phases = 3; state.voltage = 380; }
+      else { state.phases = 1; state.voltage = 220; }
+      recalculate();
+    });
+    document.getElementById('cosSelect').addEventListener('change', (e) => { state.cosPhi = parseFloat(e.target.value); recalculate(); });
+    document.getElementById('methodSelect').addEventListener('change', (e) => { state.method = e.target.value; recalculate(); });
+    document.getElementById('coresSelect').addEventListener('change', (e) => { state.cores = parseInt(e.target.value, 10); recalculate(); });
+    document.getElementById('lengthInput').addEventListener('input', (e) => { state.length = Math.max(0, parseFloat(e.target.value) || 0); recalculate(); });
+    document.getElementById('dropLimitSelect').addEventListener('change', (e) => { state.dropLimit = parseFloat(e.target.value); recalculate(); });
+    document.getElementById('tempSelect').addEventListener('change', (e) => { state.tempC = parseInt(e.target.value, 10); recalculate(); });
+    document.getElementById('bundleSelect').addEventListener('change', (e) => { state.bundleFactor = parseFloat(e.target.value); recalculate(); });
+
+    document.getElementById('condToggle').addEventListener('click', () => {
+      const content = document.getElementById('condContent');
+      content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('themeToggleBtn').addEventListener('click', () => {
+      const root = document.documentElement;
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
+
+    document.querySelectorAll('[data-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+        document.querySelectorAll('.view-section').forEach((sec) => sec.classList.remove('active'));
+        document.getElementById(`tab-${tab}`).classList.add('active');
+      });
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(state.specText);
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Скопировано!';
+        setTimeout(() => { btn.textContent = 'Копировать расчет'; }, 2000);
+      } catch {}
+    });
+
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      if (navigator.share) {
+        try { await navigator.share({ title: 'CableCalc Pro', text: state.specText }); return; } catch {}
+      }
+      document.getElementById('copyBtn').click();
+    });
+
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    // Render Reference Table
+    const refTable = document.getElementById('refTable');
+    refTable.innerHTML = `<thead><tr><th>Сечение</th><th>Откр. 1х</th><th>Откр. 2х</th><th>Откр. 3х</th><th>Труба 1х</th><th>Труба 2х</th><th>Труба 3х</th><th>Земля 1х</th><th>Земля 2х</th><th>Земля 3х</th></tr></thead><tbody>` +
+      SECTIONS.map((s) => {
+        const r = CU_TABLE[s];
+        return `<tr><td>${s} мм²</td><td>${r.OPEN[0]}</td><td>${r.OPEN[1]}</td><td>${r.OPEN[2]}</td><td>${r.CONDUIT[0]}</td><td>${r.CONDUIT[1]}</td><td>${r.CONDUIT[2]}</td><td>${r.GROUND[0]}</td><td>${r.GROUND[1]}</td><td>${r.GROUND[2]}</td></tr>`;
+      }).join('') + `</tbody>`;
+
+    populateSections();
+    recalculate();
+
+    // Service Worker & Install Prompt
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+    let deferredPrompt = null;
+    const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaInstallBtn.style.display = 'inline-flex';
+    });
+    pwaInstallBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      pwaInstallBtn.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
