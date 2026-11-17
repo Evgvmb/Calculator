@@ -1,0 +1,40 @@
+{
+  "id": "./",
+  "name": "CableCalc Pro — Инженерный калькулятор ПУЭ-7",
+  "short_name": "CableCalc",
+  "description": "Автономный инженерный калькулятор расчета кабельных линий и подбора автоматов по ПУЭ 7-го издания.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b1322",
+  "theme_color": "#0b1322",
+  "lang": "ru",
+  "categories": ["utilities", "productivity", "education"],
+  "icons": [
+    {
+      "src": "./pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
